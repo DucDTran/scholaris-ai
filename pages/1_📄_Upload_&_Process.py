@@ -7,7 +7,7 @@ from PyPDF2 import PdfReader
 from docx import Document
 import fitz  # PyMuPDF
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 import arxiv
 
