@@ -167,6 +167,7 @@ user_data_path = os.path.join("user_data", user_id)
 scores = load_user_scores(user_data_path)
 
 st.sidebar.write(f"Welcome, **{user_name}**!")
+st.sidebar.button("Logout", on_click=st.logout)
 
 if not scores:
     st.info("You haven't completed any exercises yet. Complete a quiz or other exercise to see your progress here!")

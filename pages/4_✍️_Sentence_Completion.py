@@ -145,6 +145,7 @@ user_data_path = os.path.join("user_data", user_id)
 llm = get_llm(google_api_key)
 
 st.sidebar.write(f"Welcome, **{user_name}**!")
+st.sidebar.button("Logout", on_click=st.logout)
 
 processed_docs = get_processed_documents(user_data_path)
 if not processed_docs:

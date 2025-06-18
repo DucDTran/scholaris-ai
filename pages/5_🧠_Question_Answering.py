@@ -153,6 +153,7 @@ llm = get_llm(google_api_key)
 embedding_model = get_embeddings_model()
 
 st.sidebar.write(f"Welcome, **{user_name}**!")
+st.sidebar.button("Logout", on_click=st.logout)
 
 processed_docs = get_processed_documents(user_data_path)
 if not processed_docs:

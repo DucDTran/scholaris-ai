@@ -102,6 +102,7 @@ user_data_path = os.path.join("user_data", user_id)
 
 # Add user info and logout button to the sidebar
 st.sidebar.write(f"Welcome, **{user_name}**!")
+st.sidebar.button("Logout", on_click=st.logout)
 
 vector_stores_path = os.path.join(user_data_path, "vector_stores")
 if not os.path.exists(vector_stores_path):
