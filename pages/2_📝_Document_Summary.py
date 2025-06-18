@@ -92,10 +92,14 @@ selected_doc = st.selectbox(
 )
 
 if st.button("Generate Summary", type="primary"):
-    del st.session_state.generated_summary
-    del st.session_state.summarized_doc_name
-    del st.session_state.summary_saved
-    del st.session_state.summary_displayed
+    if 'generated_summary' in st.session_state:
+        del st.session_state.generated_summary
+    if 'summarized_doc_name' in st.session_state:
+        del st.session_state.summarized_doc_name
+    if 'summary_saved' in st.session_state:
+        del st.session_state.summary_saved
+    if 'summary_displayed' in st.session_state:
+        del st.session_state.summary_displayed
 
     if not selected_doc:
         st.error("Please select a document to summarize.")
