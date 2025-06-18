@@ -150,9 +150,9 @@ with tab2:
     if st.button("Search", type="primary"):
         with st.spinner("Searching..."):
             try:
-                # arxiv_results = arxiv_client.load(query=arxiv_query)
-                arxiv_search = arxiv.Search(arxiv_query, max_results=1)
-                arxiv_results = list(arxiv_search.results())
+                client = arxiv.Client()
+                arxiv_search = arxiv.Search(arxiv_query, max_results=4)
+                arxiv_results = list(client.results(arxiv_search))
                 st.session_state.all_results = arxiv_results
             except Exception as e:
                 st.error(f"Failed to search papers: {e}")
@@ -168,7 +168,7 @@ with tab2:
                 paper_id = idx
                 paper_title = paper.title
                 paper_link = paper.entry_id
-                paper_authors = paper.authors
+                paper_authors = ", ".join([author.name for author in paper.authors])
                 paper_summary = paper.summary
 
                 with st.container():

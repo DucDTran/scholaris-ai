@@ -28,7 +28,7 @@ def get_embeddings_model():
 
 @st.cache_resource
 def get_llm(api_key):
-    return ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key, temperature=0.3)
+    return ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=api_key, temperature=0.3)
 
 def get_processed_documents(user_path):
     vector_stores_path = os.path.join(user_path, "vector_stores")
@@ -207,7 +207,7 @@ if not st.session_state.get('quiz_started'):
         options=processed_docs,
         default=st.session_state.get('selected_docs_for_quiz', [])
     )
-    num_questions_to_gen = st.number_input("How many questions would you like?", min_value=1, max_value=10, value=3)
+    num_questions_to_gen = st.number_input("How many questions would you like?", min_value=1, max_value=10, value=4)
 
     if st.button("Generate Quiz", type="primary"):
         if not selected_docs:

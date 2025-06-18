@@ -240,7 +240,7 @@ else:
         options=processed_docs,
         default=st.session_state.get('selected_docs_for_qa', [])
     )
-    num_questions = st.number_input("How many questions to generate?", min_value=1, max_value=10, value=3)
+    num_questions = st.number_input("How many questions to generate?", min_value=1, max_value=10, value=4)
     
     if st.button("Generate Exercises", type="primary"):
         if not selected_docs:
