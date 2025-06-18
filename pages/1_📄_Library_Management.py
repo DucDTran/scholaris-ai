@@ -84,7 +84,7 @@ def process_and_save_document(text_chunks, doc_store_path):
     return True
 
 # --- UI & LOGIC ---
-st.title("📄 Upload and Process Your Documents")
+st.title("📄 Upload or Search Documents")
 st.markdown("Upload your documents to create a library of exercises. You can also search for papers and process them.")
 
 if "user_name" not in st.session_state or not st.session_state.get("user_name"):
