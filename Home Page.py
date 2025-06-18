@@ -1,5 +1,8 @@
 import streamlit as st
 import os
+import torch
+
+torch.classes.__path__ = [os.path.join(torch.__path__[0], torch.classes.__file__)]
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
