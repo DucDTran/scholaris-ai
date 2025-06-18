@@ -94,7 +94,7 @@ def generate_qa_exercises(vector_store, llm, num_questions):
     
     parser = JsonOutputParser(pydantic_object=GeneratedQuestion)
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an expert educator. Based ONLY on the provided context, generate one insightful, open-ended question and a short, concise ideal answer. The answer should be given under bullet points whenever possible. Format as a JSON object."),
+        ("system", "You are a helpful assistant designed to create question and answer exercises based ONLY on the provided context. Each exercise should have a question and a short, concise ideal answer. The answer should be given under bullet points whenever possible. Format as a JSON object."),
         ("human", "Context:\n---\n{context}\n---\n\nFormat Instructions:\n{format_instructions}")
     ])
     chain = prompt | llm | parser
@@ -151,6 +151,8 @@ user_id = st.session_state.user_id
 user_data_path = os.path.join("user_data", user_id)
 llm = get_llm(google_api_key)
 embedding_model = get_embeddings_model()
+
+st.sidebar.write(f"Welcome, **{user_name}**!")
 
 processed_docs = get_processed_documents(user_data_path)
 if not processed_docs:

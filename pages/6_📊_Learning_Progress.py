@@ -166,6 +166,8 @@ user_id = st.session_state.user_id
 user_data_path = os.path.join("user_data", user_id)
 scores = load_user_scores(user_data_path)
 
+st.sidebar.write(f"Welcome, **{user_name}**!")
+
 if not scores:
     st.info("You haven't completed any exercises yet. Complete a quiz or other exercise to see your progress here!")
     st.stop()

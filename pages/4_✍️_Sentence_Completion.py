@@ -91,7 +91,7 @@ def generate_fill_in_the_blank_exercises(vector_store, llm, num_exercises):
     
     parser = JsonOutputParser(pydantic_object=FillInTheBlank)
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an AI assistant creating 'fill-in-the-blank' exercises. Based ONLY on the provided context, identify a key sentence, remove one crucial keyword, and replace it with '[BLANK]'. Provide the keyword and an explanation. Format as a JSON object."),
+        ("system", "You are a helpful assistant designed to create fill-in-the-blank exercises based ONLY on the provided context. Each exercise should have a key sentence with a blank, and the correct answer should be one of the key terms in the sentence. The explanation should be a brief explanation of the key term or why it's important in the context. Format as a JSON object."),
         ("human", "Context:\n---\n{context}\n---\n\nFormat Instructions:\n{format_instructions}")
     ])
     chain = prompt | llm | parser
@@ -143,6 +143,8 @@ google_api_key = st.session_state.google_api_key
 user_id = st.session_state.user_id
 user_data_path = os.path.join("user_data", user_id)
 llm = get_llm(google_api_key)
+
+st.sidebar.write(f"Welcome, **{user_name}**!")
 
 processed_docs = get_processed_documents(user_data_path)
 if not processed_docs:

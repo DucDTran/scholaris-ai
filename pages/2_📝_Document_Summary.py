@@ -71,6 +71,8 @@ user_id = st.session_state.user_id
 user_data_path = os.path.join("user_data", user_id)
 llm = get_llm(google_api_key)
 
+st.sidebar.write(f"Welcome, **{user_name}**!")
+
 if 'generated_summary' not in st.session_state:
     initialize_summary_state()
     # --- Summarization Workflow ---

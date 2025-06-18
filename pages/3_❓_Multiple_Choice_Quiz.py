@@ -153,6 +153,8 @@ user_id = st.session_state.user_id
 user_data_path = os.path.join("user_data", user_id)
 llm = get_llm(google_api_key)
 
+st.sidebar.write(f"Welcome, **{user_name}**!")
+
 processed_docs = get_processed_documents(user_data_path)
 if not processed_docs:
     st.warning("You have no processed documents. Please go to 'Upload & Process' to add some.", icon="⚠️")
