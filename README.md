@@ -49,8 +49,8 @@ Follow these steps to get a local copy up and running.
 ### **Installation**
 
 1. **Clone the repository:**  
-   git clone https://github.com/your-username/scholaris.git  
-   cd scholaris
+   ```git clone https://github.com/your-username/scholaris.git  
+   cd scholaris```
 
 2. **Create a virtual environment:**  
    python \-m venv venv  
