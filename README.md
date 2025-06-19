@@ -98,7 +98,3 @@ Follow these steps to get a local copy up and running.
 ## **🤝 Contributing**
 
 Contributions, issues, and feature requests are welcome\! Feel free to check the issues page.
-
-## **📜 License**
-
-Distributed under the MIT License. See LICENSE.txt for more information.
