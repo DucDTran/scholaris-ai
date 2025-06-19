@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from datetime import datetime, timedelta
 
+
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="User Dashboard",

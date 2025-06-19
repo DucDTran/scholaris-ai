@@ -1,87 +1,17 @@
 
 import streamlit as st
 import os
-import re
 import shutil
-from PyPDF2 import PdfReader
-from docx import Document
-import fitz  # PyMuPDF
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
 import arxiv
+from utils.sanitize_filename import sanitize_filename
+from utils.get_text_from_file import get_text_from_file
+from utils.get_text_from_pdf_path import get_text_from_pdf_path
+from utils.get_text_chunks import get_text_chunks
+from utils.get_processed_documents import get_processed_documents
+from utils.process_and_save_documents import process_and_save_document
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="Upload & Process", page_icon="📄", layout="wide")
-
-# --- FUNCTIONS ---
-def sanitize_filename(filename):
-    """Removes special characters to create a valid directory name."""
-    s = re.sub(r'[^a-zA-Z0-9_\-]', '_', filename)
-    return s[:100]  # Truncate to a reasonable length
-
-@st.cache_resource
-def get_embeddings_model():
-    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-
-def get_text_from_file(uploaded_file):
-    """Extracts text from a single uploaded file object."""
-    text = ""
-    file_name = uploaded_file.name
-    file_extension = os.path.splitext(file_name)[1].lower()
-    if file_extension == ".pdf":
-        try:
-            pdf_reader = PdfReader(uploaded_file)
-            for page in pdf_reader.pages:
-                text += page.extract_text() or ""
-        except Exception as e:
-            st.error(f"Error reading {file_name}: {e}")
-    elif file_extension == ".docx":
-        try:
-            doc = Document(uploaded_file)
-            for para in doc.paragraphs:
-                text += para.text + "\n"
-        except Exception as e:
-            st.error(f"Error reading {file_name}: {e}")
-    elif file_extension == ".txt":
-        try:
-            text += uploaded_file.read().decode("utf-8")
-        except Exception as e:
-            st.error(f"Error reading {file_name}: {e}")
-    return text
-
-def get_text_from_pdf_path(pdf_path):
-    """Extracts text from a PDF file path using PyMuPDF."""
-    text = ""
-    with fitz.open(pdf_path) as doc:
-        for page in doc:
-            text += page.get_text()
-    return text
-
-def get_text_chunks(raw_text):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200, length_function=len)
-    return text_splitter.split_text(raw_text)
-
-def get_processed_documents(user_path):
-    """Returns a list of already processed document names."""
-    vector_stores_path = os.path.join(user_path, "vector_stores")
-    if os.path.exists(vector_stores_path):
-        return [name for name in os.listdir(vector_stores_path) if os.path.isdir(os.path.join(vector_stores_path, name))]
-    return []
-
-def process_and_save_document(text_chunks, doc_store_path):
-    """Creates a FAISS vector store and saves it."""
-    if not text_chunks:
-        st.error("Could not split document into chunks.")
-        return False
-    
-    embeddings = get_embeddings_model()
-    vector_store = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
-    
-    if os.path.exists(doc_store_path):
-        shutil.rmtree(doc_store_path)  # Remove old version if re-processing
-    vector_store.save_local(doc_store_path)
-    return True
 
 # --- UI & LOGIC ---
 st.title("📄 Upload or Search Documents")
@@ -99,6 +29,7 @@ user_name = st.session_state.user_name
 google_api_key = st.session_state.google_api_key
 user_id = st.session_state.user_id
 user_data_path = os.path.join("user_data", user_id)
+
 
 # Add user info and logout button to the sidebar
 st.sidebar.write(f"Welcome, **{user_name}**!")

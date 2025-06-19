@@ -5,12 +5,11 @@ import json
 from pydantic import BaseModel, Field
 from typing import List
 from datetime import datetime
-
-from langchain_community.vectorstores import FAISS
+from utils.load_and_merge_vector_store import load_and_merge_vector_stores
+from utils.get_processed_documents import get_processed_documents
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_huggingface import HuggingFaceEmbeddings
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="Sentence Completion", page_icon="✍️", layout="wide")
@@ -22,40 +21,10 @@ class FillInTheBlank(BaseModel):
     explanation: str = Field(description="A brief explanation of the key term or why it's important in the context.")
 
 # --- FUNCTIONS ---
-@st.cache_resource
-def get_embeddings_model():
-    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 @st.cache_resource
 def get_llm(api_key):
     return ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=api_key, temperature=0.3)
-
-def get_processed_documents(user_path):
-    vector_stores_path = os.path.join(user_path, "vector_stores")
-    if os.path.exists(vector_stores_path):
-        return [name for name in os.listdir(vector_stores_path) if os.path.isdir(os.path.join(vector_stores_path, name))]
-    return []
-
-def load_and_merge_vector_stores(user_path, doc_names):
-    embeddings = get_embeddings_model()
-    main_vector_store = None
-    vector_stores_path = os.path.join(user_path, "vector_stores")
-
-    for i, doc_name in enumerate(doc_names):
-        doc_path = os.path.join(vector_stores_path, doc_name)
-        if not os.path.exists(doc_path):
-            st.warning(f"Could not find processed document: {doc_name}")
-            continue
-        try:
-            if i == 0:
-                main_vector_store = FAISS.load_local(doc_path, embeddings, allow_dangerous_deserialization=True)
-            else:
-                new_vector_store = FAISS.load_local(doc_path, embeddings, allow_dangerous_deserialization=True)
-                main_vector_store.merge_from(new_vector_store)
-        except Exception as e:
-            st.error(f"Error loading document '{doc_name}': {e}")
-            
-    return main_vector_store
 
 def save_user_score(user_path, score, total):
     scores_file = os.path.join(user_path, "scores.json")

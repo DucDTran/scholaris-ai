@@ -1,50 +1,17 @@
 import streamlit as st
 import os
-import tempfile
-import shutil
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains.summarize import load_summarize_chain
-from langchain_core.prompts import PromptTemplate
-from langchain.docstore.document import Document
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
-from pydantic import BaseModel, Field
-from typing import List
 from langchain_core.prompts import ChatPromptTemplate
+from utils.get_processed_documents import get_processed_documents
+from utils.load_vector_store import load_vector_store
+
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="Summarization", page_icon="📝", layout="wide")
 
-# --- CORE FUNCTIONS ---
-@st.cache_resource
-def get_embeddings_model():
-    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-
 @st.cache_resource
 def get_llm(api_key):
     return ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=api_key, temperature=0.2)
-
-def get_processed_documents(user_path):
-    """Lists processed documents from the local file system."""
-    vector_stores_path = os.path.join(user_path, "vector_stores")
-    if os.path.exists(vector_stores_path):
-        return [name for name in os.listdir(vector_stores_path) if os.path.isdir(os.path.join(vector_stores_path, name))]
-    return []
-
-def load_vector_store(user_path, doc_name):
-    """Loads a single FAISS vector store from the local file system."""
-    embeddings = get_embeddings_model()
-    vector_store_path = os.path.join(user_path, "vector_stores", doc_name)
-    if os.path.exists(vector_store_path):
-        try:
-            return FAISS.load_local(vector_store_path, embeddings, allow_dangerous_deserialization=True)
-        except Exception as e:
-            st.error(f"Failed to load document '{doc_name}': {e}")
-            return None
-    else:
-        st.error(f"Could not find processed document: {doc_name}")
-        return None
 
 def initialize_summary_state():
     st.session_state.generated_summary = None
@@ -108,8 +75,7 @@ if st.button("Generate Summary", type="primary"):
             vector_store = load_vector_store(user_data_path, selected_doc)
             if vector_store:
                 try:
-                    # Retrieve all text chunks from the vector store
-                    # The number 999 is a simple way to try and get all docs.
+
                     all_docs = vector_store.similarity_search("", k=999)
 
                     if not all_docs:
