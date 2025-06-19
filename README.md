@@ -55,15 +55,20 @@ Follow these steps to get a local copy up and running.
    ```
 
 2. **Create a virtual environment:**  
+   ```
    python \-m venv venv  
    source venv/bin/activate  \# On Windows, use \`venv\\Scripts\\activate\`
+   ```
 
 3. **Install dependencies:**  
+   ```
    pip install \-r requirements.txt
+   ```
 
 4. **Configure your secrets:**  
    * Create a file at .streamlit/secrets.toml.  
    * Add your credentials in the following format:  
+     ```
      \[auth\]  
      redirect\_uri \= "http://localhost:8501"  
      logout\_uri \= "http://localhost:8501" \# Or your Auth0 logout URL
@@ -72,11 +77,14 @@ Follow these steps to get a local copy up and running.
      domain \= "YOUR\_AUTH0\_DOMAIN"  
      client\_id \= "YOUR\_AUTH0\_CLIENT\_ID"  
      client\_secret \= "YOUR\_AUTH0\_CLIENT\_SECRET"
+     ```
 
 5. **Configure your Auth0 Application:**  
    * In your Auth0 dashboard, ensure that http://localhost:8501 is added to both **Allowed Callback URLs** and **Allowed Logout URLs**.  
 6. **Run the application:**  
+   ```
    streamlit run Home\ Page.py
+   ```
 
 ## **🗺️ Future Roadmap**
 
